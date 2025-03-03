@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musik</title>
+    <link rel="stylesheet" href=".css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Profilbild oben rechts -->
+    <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Musik</h1>
+            <h2 class="subtitle">Füge deine Lieblingssongs hinzu</h2>
+        </header>
+
+        <!-- Musikformular -->
+        <form id="musicForm" class="form">
+            <div class="form-group">
+                <label for="song">Song</label>
+                <input type="text" id="song" name="song" placeholder="Songname" required>
+            </div>
+            <div class="form-group">
+                <label for="artist">Künstler</label>
+                <input type="text" id="artist" name="artist" placeholder="Künstlername" required>
+            </div>
+            <div class="form-group">
+                <label for="link">Link (optional)</label>
+                <input type="url" id="link" name="link" placeholder="Link zum Song (z. B. YouTube)">
+            </div>
+            <button type="submit" class="button">Hinzufügen</button>
+        </form>
+
+        <!-- Musikliste -->
+        <div id="musicList" class="music-list"></div>
+
+        <!-- Link zu anderen Seiten -->
+        <div class="link-container">
+            <a href="profile.html">Profil</a> |
+            <a href="notes.html">Notizen</a> |
+            <a href="couples.html">Couples</a> |
+            <a href="gallery.html">Galerie</a>
+        </div>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('currentUser'));
+
+        // Musik speichern und anzeigen
+        document.getElementById('musicForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const song = document.getElementById('song').value;
+            const artist = document.getElementById('artist').value;
+            const link = document.getElementById('link').value;
+
+            const response = await fetch('/api/music', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userData._id, song, artist, link }),
+            });
+
+            if (response.ok) {
+                displayMusic();
+                document.getElementById('song').value = '';
+                document.getElementById('artist').value = '';
+                document.getElementById('link').value = '';
+            } else {
+                alert('Fehler beim Speichern der Musik!');
+            }
+        });
+
+        // Musik anzeigen
+        async function displayMusic() {
+            const musicList = document.getElementById('musicList');
+            const response = await fetch(`/api/music/${userData._id}`);
+            const music = await response.json();
+
+            if (music) {
+                musicList.innerHTML = music.map(item => `
+                    <div class="music-item">
+                        <div>
+                            <strong>${item.song}</strong> von ${item.artist}
+                            ${item.link ? `<a href="${item.link}" target="_blank" class="link-icon">🔗</a>` : ''}
+                        </div>
+                        <span class="delete-icon" onclick="deleteMusic('${item._id}')">❌</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Musik löschen
+        async function deleteMusic(musicId) {
+            const response = await fetch(`/api/music/${musicId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                displayMusic();
+            } else {
+                alert('Fehler beim Löschen der Musik!');
+            }
+        }
+
+        // Musik beim Laden der Seite anzeigen
+        displayMusic();
+    </script>
+</body>
+</html>

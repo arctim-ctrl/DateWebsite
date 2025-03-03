@@ -1,0 +1,146 @@
+/* Allgemeine Stile */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    text-align: center;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    margin-bottom: 40px;
+}
+
+.title {
+    font-size: 48px;
+    font-weight: 700;
+    color: #6c5ce7;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 24px;
+    color: #6c5ce7;
+    opacity: 0.8;
+    margin: 10px 0 0;
+}
+
+.form {
+    background: rgba(246, 235, 222, 0.722);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #6c5ce7;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #6c5ce7;
+    outline: none;
+}
+
+.button {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    background-color: #6c5ce7;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button:hover {
+    background-color: #5a4dbf;
+    transform: translateY(-3px);
+}
+
+.link-container {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.link-container a {
+    color: #6c5ce7;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.link-container a:hover {
+    text-decoration: underline;
+}
+
+.notes-list,
+.music-list {
+    margin-top: 20px;
+}
+
+.note-item,
+.music-item {
+    background: rgba(246, 235, 222, 0.722);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.note-item p,
+.music-item p {
+    margin: 0;
+    color: #333;
+}
+
+.delete-icon {
+    cursor: pointer;
+    font-size: 18px;
+    color: #ff4d4d;
+}
+
+.delete-icon:hover {
+    color: #cc0000;
+}
+
+.link-icon {
+    text-decoration: none;
+    font-size: 18px;
+    color: #6c5ce7;
+    cursor: pointer;
+}
+
+.link-icon:hover {
+    color: #4a3cad;
+}

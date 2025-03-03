@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrieren</title>
+    <link rel="stylesheet" href=".css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Registrieren</h1>
+            <h2 class="subtitle">Erstelle dein Konto</h2>
+        </header>
+
+        <form id="registerForm" class="form">
+            <div class="form-group">
+                <label for="username">Benutzername</label>
+                <input type="text" id="username" name="username" placeholder="Dein Benutzername" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Passwort</label>
+                <input type="password" id="password" name="password" placeholder="Dein Passwort" required>
+            </div>
+            <button type="submit" class="button">Registrieren</button>
+        </form>
+
+        <div class="link-container">
+            <p>Hast du schon ein Konto? <a href="login.html">Hier anmelden</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/api/users/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+
+            if (response.ok) {
+                alert('Registrierung erfolgreich! Du kannst dich jetzt anmelden.');
+                window.location.href = 'login.html';
+            } else {
+                alert('Fehler bei der Registrierung!');
+            }
+        });
+    </script>
+</body>
+</html>

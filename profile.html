@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil</title>
+    <link rel="stylesheet" href=".css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Profilbild oben rechts -->
+    <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Profil</h1>
+            <h2 class="subtitle">Personalisiere dein Konto</h2>
+        </header>
+
+        <form id="profileForm" class="form">
+            <div class="form-group">
+                <label for="profileImage">Profilbild (URL)</label>
+                <input type="text" id="profileImage" name="profileImage" placeholder="Profilbild-URL">
+            </div>
+            <div class="form-group">
+                <label for="favoriteSong">Lieblingssong</label>
+                <input type="text" id="favoriteSong" name="favoriteSong" placeholder="Dein Lieblingssong">
+            </div>
+            <div class="form-group">
+                <label for="bio">Bio</label>
+                <textarea id="bio" name="bio" placeholder="Erzähl etwas über dich"></textarea>
+            </div>
+            <button type="submit" class="button">Speichern</button>
+        </form>
+
+        <div class="link-container">
+            <a href="notes.html">Notizen</a> |
+            <a href="music.html">Musik</a> |
+            <a href="couples.html">Couples</a> |
+            <a href="gallery.html">Galerie</a>
+        </div>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (userData) {
+            document.getElementById('profileImage').value = userData.profileImage || '';
+            document.getElementById }

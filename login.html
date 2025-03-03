@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href=".css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Login</h1>
+            <h2 class="subtitle">Melde dich mit deinem Konto an</h2>
+        </header>
+
+        <form id="loginForm" class="form">
+            <div class="form-group">
+                <label for="username">Benutzername</label>
+                <input type="text" id="username" name="username" placeholder="Dein Benutzername" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Passwort</label>
+                <input type="password" id="password" name="password" placeholder="Dein Passwort" required>
+            </div>
+            <button type="submit" class="button">Anmelden</button>
+        </form>
+
+        <div class="link-container">
+            <p>Noch kein Konto? <a href="register.html">Hier registrieren</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/api/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+
+            if (response.ok) {
+                const user = await response.json();
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                window.location.href = 'profile.html';
+            } else {
+                alert('Falscher Benutzername oder Passwort!');
+            }
+        });
+    </script>
+</body>
+</html>

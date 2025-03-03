@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notizen</title>
+    <link rel="stylesheet" href=".css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Profilbild oben rechts -->
+    <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Notizen</h1>
+            <h2 class="subtitle">Halte deine Gedanken fest</h2>
+        </header>
+
+        <!-- Notizenformular -->
+        <form id="noteForm" class="form">
+            <div class="form-group">
+                <label for="note">Neue Notiz</label>
+                <textarea id="note" name="note" placeholder="Schreibe eine Notiz" required></textarea>
+            </div>
+            <button type="submit" class="button">Hinzufügen</button>
+        </form>
+
+        <!-- Notizenliste -->
+        <div id="notesList" class="notes-list"></div>
+
+        <!-- Link zu anderen Seiten -->
+        <div class="link-container">
+            <a href="profile.html">Profil</a> |
+            <a href="music.html">Musik</a> |
+            <a href="couples.html">Couples</a> |
+            <a href="gallery.html">Galerie</a>
+        </div>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('currentUser'));
+
+        // Notizen speichern und anzeigen
+        document.getElementById('noteForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const note = document.getElementById('note').value;
+
+            const response = await fetch('/api/notes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userData._id, text: note }),
+            });
+
+            if (response.ok) {
+                displayNotes();
+                document.getElementById('note').value = '';
+            } else {
+                alert('Fehler beim Speichern der Notiz!');
+            }
+        });
+
+        // Notizen anzeigen
+        async function displayNotes() {
+            const notesList = document.getElementById('notesList');
+            const response = await fetch(`/api/notes/${userData._id}`);
+            const notes = await response.json();
+
+            if (notes) {
+                notesList.innerHTML = notes.map(note => `
+                    <div class="note-item">
+                        <p>${note.text}</p>
+                        <span class="delete-icon" onclick="deleteNote('${note._id}')">❌</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Notiz löschen
+        async function deleteNote(noteId) {
+            const response = await fetch(`/api/notes/${noteId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                displayNotes();
+            } else {
+                alert('Fehler beim Löschen der Notiz!');
+            }
+        }
+
+        // Notizen beim Laden der Seite anzeigen
+        displayNotes();
+    </script>
+</body>
+</html>
