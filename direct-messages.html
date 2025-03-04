@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direktnachrichten</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Profilbild oben rechts -->
+    <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
+
+    <div class="container">
+        <!-- Überschrift -->
+        <header class="header">
+            <h1 class="title">Direktnachrichten</h1>
+            <h2 class="subtitle">Chatte mit deinen Freunden</h2>
+        </header>
+
+        <!-- Chat-Layout -->
+        <div class="chat-layout">
+            <!-- Linke Seite: Freunde -->
+            <div class="friend-list">
+                <h3>Freunde</h3>
+                <ul id="friendList">
+                    <!-- Freunde werden hier dynamisch geladen -->
+                </ul>
+            </div>
+
+            <!-- Rechte Seite: Chat -->
+            <div class="chat-container">
+                <h3 id="chatTitle">Chat</h3>
+                <div id="chat" class="chat"></div>
+                <form id="chatForm" class="chat-form">
+                    <input type="text" id="messageInput" placeholder="Schreibe eine Nachricht..." required>
+                    <button type="submit" class="button">Senden</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Link zu anderen Seiten -->
+        <div class="link-container">
+            <a href="profile.html">Profil</a> |
+            <a href="notes.html">Notizen</a> |
+            <a href="music.html">Musik</a> |
+            <a href="couples.html">Couples</a> |
+            <a href="gallery.html">Galerie</a> |
+            <a href="forum.html"><i class="fas fa-comments"></i> Forum</a>
+        </div>
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('currentUser'));
+
+        // Beispiel-Freunde (kann durch Backend-Daten ersetzt werden)
+        const friends = [
+            { id: 1, name: "Timm" },
+            { id: 2, name: "Liana" },
+        ];
+
+        // Freunde anzeigen
+        const friendList = document.getElementById('friendList');
+        friends.forEach(friend => {
+            const li = document.createElement('li');
+            li.textContent = friend.name;
+            li.onclick = () => openChat(friend.id);
+            friendList.appendChild(li);
+        });
+
+        // Chat mit Freund öffnen
+        function openChat(friendId) {
+            const friend = friends.find(f => f.id === friendId);
+            document.getElementById('chatTitle').textContent = `Chat mit ${friend.name}`;
+            document.getElementById('chat').innerHTML = ""; // Chat leeren
+        }
+
+        // Nachricht senden
+        document.getElementById('chatForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const message = document.getElementById('messageInput').value;
+            const messageElement = document.createElement('p');
+            messageElement.textContent = `${userData.username}: ${message}`;
+            document.getElementById('chat').appendChild(messageElement);
+
+            document.getElementById('messageInput').value = '';
+        });
+    </script>
+</body>
+</html>

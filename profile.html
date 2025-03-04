@@ -17,21 +17,38 @@
             <h2 class="subtitle">Personalisiere dein Konto</h2>
         </header>
 
-        <form id="profileForm" class="form">
-            <div class="form-group">
-                <label for="profileImage">Profilbild (URL)</label>
-                <input type="text" id="profileImage" name="profileImage" placeholder="Profilbild-URL">
+        <div class="profile-layout">
+            <!-- Linke Seite: Profilformular -->
+            <div class="profile-form">
+                <form id="profileForm" class="form">
+                    <div class="form-group">
+                        <label for="profileImage">Profilbild (URL)</label>
+                        <input type="text" id="profileImage" name="profileImage" placeholder="Profilbild-URL">
+                    </div>
+                    <div class="form-group">
+                        <label for="favoriteSong">Lieblingssong</label>
+                        <input type="text" id="favoriteSong" name="favoriteSong" placeholder="Dein Lieblingssong">
+                    </div>
+                    <div class="form-group">
+                        <label for="bio">Bio</label>
+                        <textarea id="bio" name="bio" placeholder="Erzähl etwas über dich"></textarea>
+                    </div>
+                    <button type="submit" class="button">Speichern</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="favoriteSong">Lieblingssong</label>
-                <input type="text" id="favoriteSong" name="favoriteSong" placeholder="Dein Lieblingssong">
+
+            <!-- Rechte Seite: Freunde und Suchfeld -->
+            <div class="friends-section">
+                <h3>Freunde</h3>
+                <div class="search-friends">
+                    <input type="text" id="searchUser" placeholder="Benutzer suchen...">
+                    <button onclick="searchUser()" class="button">Suchen</button>
+                </div>
+                <ul id="friendList">
+                    <!-- Freunde werden hier dynamisch geladen -->
+                </ul>
             </div>
-            <div class="form-group">
-                <label for="bio">Bio</label>
-                <textarea id="bio" name="bio" placeholder="Erzähl etwas über dich"></textarea>
-            </div>
-            <button type="submit" class="button">Speichern</button>
-        </form>
+        </div>
 
         <div class="link-container">
             <a href="notes.html">Notizen</a> |
@@ -46,4 +63,51 @@
 
         if (userData) {
             document.getElementById('profileImage').value = userData.profileImage || '';
-            document.getElementById }
+            document.getElementById('favoriteSong').value = userData.favoriteSong || '';
+            document.getElementById('bio').value = userData.bio || '';
+        }
+
+        // Beispiel-Freunde (kann durch Backend-Daten ersetzt werden)
+        const friends = [
+            { id: 1, name: "Timm" },
+            { id: 2, name: "Liana" },
+        ];
+
+        // Freunde anzeigen
+        const friendList = document.getElementById('friendList');
+        friends.forEach(friend => {
+            const li = document.createElement('li');
+            li.textContent = friend.name;
+            friendList.appendChild(li);
+        });
+
+        // Benutzer suchen
+        function searchUser() {
+            const searchTerm = document.getElementById('searchUser').value;
+            // Hier könnte eine API-Anfrage an das Backend gesendet werden, um Benutzer zu suchen
+            alert(`Suche nach: ${searchTerm}`);
+        }
+
+        // Profil speichern
+        document.getElementById('profileForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const profileImage = document.getElementById('profileImage').value;
+            const favoriteSong = document.getElementById('favoriteSong').value;
+            const bio = document.getElementById('bio').value;
+
+            const response = await fetch('/api/profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userData._id, profileImage, favoriteSong, bio }),
+            });
+
+            if (response.ok) {
+                alert('Profil erfolgreich gespeichert!');
+            } else {
+                alert('Fehler beim Speichern des Profils!');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Profilbild oben rechts -->
+    <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
+
+    <div class="container">
+        <!-- Überschrift -->
+        <header class="header">
+            <h1 class="title">Galerie</h1>
+            <h2 class="subtitle">Teile und betrachte deine Bilder</h2>
+        </header>
+
+        <!-- Button zum Hochladen von Bildern -->
+        <div class="upload-section">
+            <button onclick="openUploadDialog()" class="button">
+                <i class="fas fa-upload"></i> Bild hochladen
+            </button>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+        </div>
+
+        <!-- Galerie-Layout -->
+        <div id="gallery" class="gallery-grid">
+            <!-- Bilder werden hier dynamisch geladen -->
+        </div>
+
+        <!-- Link zu anderen Seiten -->
+        <div class="link-container">
+            <a href="profile.html">Profil</a> |
+            <a href="notes.html">Notizen</a> |
+            <a href="music.html">Musik</a> |
+            <a href="couples.html">Couples</a> |
+            <a href="direct-messages.html"><i class="fas fa-envelope"></i> Direktnachrichten</a>
+        </div>
+    </div>
+
+    <!-- Modal für vergrößerte Bilder -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img id="modalImage" class="modal-content">
+    </div>
+
+    <script>
+        const userData = JSON.parse(localStorage.getItem('currentUser'));
+
+        // Beispiel-Bilder (kann durch Backend-Daten ersetzt werden)
+        let images = [
+            { id: 1, url: "images/example1.jpg", date: "2023-10-01" },
+            { id: 2, url: "images/example2.jpg", date: "2023-10-02" },
+        ];
+
+        // Bilder in der Galerie anzeigen
+        const gallery = document.getElementById('gallery');
+        function displayImages() {
+            gallery.innerHTML = images.map(image => `
+                <div class="gallery-item">
+                    <img src="${image.url}" alt="Bild" onclick="openModal('${image.url}')">
+                    <p class="upload-date">Hochgeladen am: ${image.date}</p>
+                </div>
+            `).join('');
+        }
+
+        // Modal für vergrößerte Bilder öffnen
+        function openModal(imageUrl) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = "block";
+            modalImg.src = imageUrl;
+        }
+
+        // Modal schließen
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = "none";
+        }
+
+        // Datei-Upload-Dialog öffnen
+        function openUploadDialog() {
+            document.getElementById('fileInput').click();
+        }
+
+        // Bild hochladen und zur Galerie hinzufügen
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const newImage = {
+                        id: images.length + 1,
+                        url: e.target.result,
+                        date: new Date().toLocaleDateString(),
+                    };
+                    images.push(newImage);
+                    displayImages();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Bilder beim Laden der Seite anzeigen
+        displayImages();
+    </script>
+</body>
+</html>
