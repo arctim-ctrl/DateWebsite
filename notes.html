@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Notizen</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href=".css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -12,22 +12,23 @@
     <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
 
     <div class="container">
+        <!-- Überschrift -->
         <header class="header">
             <h1 class="title">Notizen</h1>
             <h2 class="subtitle">Halte deine Gedanken fest</h2>
         </header>
 
-        <!-- Notizenformular -->
-        <form id="noteForm" class="form">
+        <!-- Neue Notizgruppe erstellen -->
+        <form id="noteGroupForm" class="form">
             <div class="form-group">
-                <label for="note">Neue Notiz</label>
-                <textarea id="note" name="note" placeholder="Schreibe eine Notiz" required></textarea>
+                <label for="noteGroupTitle">Neue Notizgruppe</label>
+                <input type="text" id="noteGroupTitle" name="noteGroupTitle" placeholder="Titel der Notizgruppe" required>
             </div>
-            <button type="submit" class="button">Hinzufügen</button>
+            <button type="submit" class="button">Gruppe erstellen</button>
         </form>
 
-        <!-- Notizenliste -->
-        <div id="notesList" class="notes-list"></div>
+        <!-- Notizgruppen anzeigen -->
+        <div id="noteGroups" class="note-groups"></div>
 
         <!-- Link zu anderen Seiten -->
         <div class="link-container">
@@ -41,61 +42,94 @@
     <script>
         const userData = JSON.parse(localStorage.getItem('currentUser'));
 
-        // Notizen speichern und anzeigen
-        document.getElementById('noteForm').addEventListener('submit', async function(event) {
+        // Notizgruppen speichern und anzeigen
+        document.getElementById('noteGroupForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
-            const note = document.getElementById('note').value;
+            const title = document.getElementById('noteGroupTitle').value;
 
-            const response = await fetch('/api/notes', {
+            // Neue Notizgruppe erstellen
+            const response = await fetch('/api/notes/groups', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId: userData._id, text: note }),
+                body: JSON.stringify({ userId: userData._id, title }),
             });
 
             if (response.ok) {
-                displayNotes();
-                document.getElementById('note').value = '';
+                displayNoteGroups();
+                document.getElementById('noteGroupTitle').value = '';
             } else {
-                alert('Fehler beim Speichern der Notiz!');
+                alert('Fehler beim Erstellen der Notizgruppe!');
             }
         });
 
-        // Notizen anzeigen
-        async function displayNotes() {
-            const notesList = document.getElementById('notesList');
-            const response = await fetch(`/api/notes/${userData._id}`);
-            const notes = await response.json();
+        // Notizgruppen anzeigen
+        async function displayNoteGroups() {
+            const noteGroups = document.getElementById('noteGroups');
+            const response = await fetch(`/api/notes/groups/${userData._id}`);
+            const groups = await response.json();
 
-            if (notes) {
-                notesList.innerHTML = notes.map(note => `
-                    <div class="note-item">
-                        <p>${note.text}</p>
-                        <span class="delete-icon" onclick="deleteNote('${note._id}')">❌</span>
+            if (groups) {
+                noteGroups.innerHTML = groups.map(group => `
+                    <div class="note-group">
+                        <h3 onclick="showNotes('${group._id}')">${group.title}</h3>
+                        <div id="notes-${group._id}" class="notes-container" style="display: none;">
+                            <!-- Notizen für diese Gruppe -->
+                            ${group.notes.map(note => `
+                                <div class="note-item">
+                                    <input type="checkbox" ${note.completed ? 'checked' : ''} onchange="toggleNoteCompletion('${note._id}')">
+                                    <p>${note.text}</p>
+                                </div>
+                            `).join('')}
+                            <!-- Neue Notiz hinzufügen -->
+                            <form onsubmit="addNote(event, '${group._id}')">
+                                <input type="text" placeholder="Neue Notiz" required>
+                                <button type="submit">Hinzufügen</button>
+                            </form>
+                        </div>
                     </div>
                 `).join('');
             }
         }
 
-        // Notiz löschen
-        async function deleteNote(noteId) {
-            const response = await fetch(`/api/notes/${noteId}`, {
-                method: 'DELETE',
+        // Notizgruppe anzeigen/ausblenden
+        function showNotes(groupId) {
+            const notesContainer = document.getElementById(`notes-${groupId}`);
+            notesContainer.style.display = notesContainer.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Notiz hinzufügen
+        async function addNote(event, groupId) {
+            event.preventDefault();
+
+            const text = event.target.querySelector('input').value;
+
+            const response = await fetch('/api/notes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: userData._id, groupId, text }),
             });
 
             if (response.ok) {
-                displayNotes();
+                displayNoteGroups();
             } else {
-                alert('Fehler beim Löschen der Notiz!');
+                alert('Fehler beim Hinzufügen der Notiz!');
             }
         }
 
-        // Notizen beim Laden der Seite anzeigen
-        displayNotes();
+        // Notiz als erledigt markieren
+        async function toggleNoteCompletion(noteId) {
+            const response = await fetch(`/api/notes/${noteId}/toggle`, {
+                method: 'PUT',
+            });
+
+            if (!response.ok) {
+                alert('Fehler beim Aktualisieren der Notiz!');
+            }
+        }
+
+        // Notizgruppen beim Laden der Seite anzeigen
+        displayNoteGroups();
     </script>
 </body>
-</html>#
-
-
-
-hallo
+</html>
