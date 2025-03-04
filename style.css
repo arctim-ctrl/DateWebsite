@@ -144,3 +144,22 @@ body {
 .link-icon:hover {
     color: #4a3cad;
 }
+
+.gif-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.gif-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.gif-grid img:hover {
+    transform: scale(1.05);
+}
