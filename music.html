@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Profilbild oben rechts -->
     <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
 
     <div class="container">
@@ -17,7 +16,6 @@
             <h2 class="subtitle">Füge deine Lieblingssongs hinzu</h2>
         </header>
 
-        <!-- Musikformular -->
         <form id="musicForm" class="form">
             <div class="form-group">
                 <label for="song">Song</label>
@@ -34,10 +32,8 @@
             <button type="submit" class="button">Hinzufügen</button>
         </form>
 
-        <!-- Musikliste -->
         <div id="musicList" class="music-list"></div>
 
-        <!-- Link zu anderen Seiten -->
         <div class="link-container">
             <a href="profile.html">Profil</a> |
             <a href="notes.html">Notizen</a> |
@@ -47,6 +43,7 @@
     </div>
 
     <script>
+        const API_URL = 'https://couples-backend.onrender.com'; // Backend-URL
         const userData = JSON.parse(localStorage.getItem('currentUser'));
 
         // Musik speichern und anzeigen
@@ -57,7 +54,7 @@
             const artist = document.getElementById('artist').value;
             const link = document.getElementById('link').value;
 
-            const response = await fetch('/api/music', {
+            const response = await fetch(`${API_URL}/api/music`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: userData._id, song, artist, link }),
@@ -76,7 +73,7 @@
         // Musik anzeigen
         async function displayMusic() {
             const musicList = document.getElementById('musicList');
-            const response = await fetch(`/api/music/${userData._id}`);
+            const response = await fetch(`${API_URL}/api/music/${userData._id}`);
             const music = await response.json();
 
             if (music) {
@@ -94,7 +91,7 @@
 
         // Musik löschen
         async function deleteMusic(musicId) {
-            const response = await fetch(`/api/music/${musicId}`, {
+            const response = await fetch(`${API_URL}/api/music/${musicId}`, {
                 method: 'DELETE',
             });
 

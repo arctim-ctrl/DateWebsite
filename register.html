@@ -32,13 +32,15 @@
     </div>
 
     <script>
+        const API_URL = 'https://couples-backend.onrender.com'; // Backend-URL
+
         document.getElementById('registerForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            const response = await fetch('/api/users/register', {
+            const response = await fetch(`${API_URL}/api/users/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),

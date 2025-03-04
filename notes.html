@@ -8,17 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Profilbild oben rechts -->
     <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
 
     <div class="container">
-        <!-- Überschrift -->
         <header class="header">
             <h1 class="title">Notizen</h1>
             <h2 class="subtitle">Halte deine Gedanken fest</h2>
         </header>
 
-        <!-- Neue Notizgruppe erstellen -->
         <form id="noteGroupForm" class="form">
             <div class="form-group">
                 <label for="noteGroupTitle">Neue Notizgruppe</label>
@@ -27,10 +24,8 @@
             <button type="submit" class="button">Gruppe erstellen</button>
         </form>
 
-        <!-- Notizgruppen anzeigen -->
         <div id="noteGroups" class="note-groups"></div>
 
-        <!-- Link zu anderen Seiten -->
         <div class="link-container">
             <a href="profile.html">Profil</a> |
             <a href="music.html">Musik</a> |
@@ -40,6 +35,7 @@
     </div>
 
     <script>
+        const API_URL = 'https://couples-backend.onrender.com'; // Backend-URL
         const userData = JSON.parse(localStorage.getItem('currentUser'));
 
         // Notizgruppen speichern und anzeigen
@@ -48,8 +44,7 @@
 
             const title = document.getElementById('noteGroupTitle').value;
 
-            // Neue Notizgruppe erstellen
-            const response = await fetch('/api/notes/groups', {
+            const response = await fetch(`${API_URL}/api/notes/groups`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: userData._id, title }),
@@ -66,7 +61,7 @@
         // Notizgruppen anzeigen
         async function displayNoteGroups() {
             const noteGroups = document.getElementById('noteGroups');
-            const response = await fetch(`/api/notes/groups/${userData._id}`);
+            const response = await fetch(`${API_URL}/api/notes/groups/${userData._id}`);
             const groups = await response.json();
 
             if (groups) {
@@ -74,14 +69,12 @@
                     <div class="note-group">
                         <h3 onclick="showNotes('${group._id}')">${group.title}</h3>
                         <div id="notes-${group._id}" class="notes-container" style="display: none;">
-                            <!-- Notizen für diese Gruppe -->
                             ${group.notes.map(note => `
                                 <div class="note-item">
                                     <input type="checkbox" ${note.completed ? 'checked' : ''} onchange="toggleNoteCompletion('${note._id}')">
                                     <p>${note.text}</p>
                                 </div>
                             `).join('')}
-                            <!-- Neue Notiz hinzufügen -->
                             <form onsubmit="addNote(event, '${group._id}')">
                                 <input type="text" placeholder="Neue Notiz" required>
                                 <button type="submit">Hinzufügen</button>
@@ -104,7 +97,7 @@
 
             const text = event.target.querySelector('input').value;
 
-            const response = await fetch('/api/notes', {
+            const response = await fetch(`${API_URL}/api/notes`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId: userData._id, groupId, text }),
@@ -119,7 +112,7 @@
 
         // Notiz als erledigt markieren
         async function toggleNoteCompletion(noteId) {
-            const response = await fetch(`/api/notes/${noteId}/toggle`, {
+            const response = await fetch(`${API_URL}/api/notes/${noteId}/toggle`, {
                 method: 'PUT',
             });
 

@@ -9,37 +9,27 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Profilbild oben rechts -->
     <img id="profileIcon" class="profile-icon" src="" alt="Profilbild">
 
     <div class="container">
-        <!-- Überschrift -->
         <header class="header">
             <h1 class="title">Forum</h1>
             <h2 class="subtitle">Erstelle und verwalte öffentliche Foren</h2>
         </header>
 
-        <!-- Forum-Layout -->
         <div class="forum-layout">
-            <!-- Linke Seite: Foren -->
             <div class="forum-list">
                 <h3>Foren</h3>
                 <button onclick="createForum()" class="button">Neues Forum erstellen</button>
-                <ul id="forumList">
-                    <!-- Foren werden hier dynamisch geladen -->
-                </ul>
+                <ul id="forumList"></ul>
             </div>
 
-            <!-- Rechte Seite: Forum-Details -->
             <div class="forum-details">
                 <h3 id="forumTitle">Forum-Details</h3>
-                <div id="forumContent">
-                    <!-- Inhalt des ausgewählten Forums wird hier angezeigt -->
-                </div>
+                <div id="forumContent"></div>
             </div>
         </div>
 
-        <!-- Link zu anderen Seiten -->
         <div class="link-container">
             <a href="profile.html">Profil</a> |
             <a href="notes.html">Notizen</a> |
@@ -51,6 +41,7 @@
     </div>
 
     <script>
+        const API_URL = 'https://couples-backend.onrender.com'; // Backend-URL
         const userData = JSON.parse(localStorage.getItem('currentUser'));
 
         // Beispiel-Foren (kann durch Backend-Daten ersetzt werden)
